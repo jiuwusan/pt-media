@@ -1,4 +1,4 @@
-const axios = require('axios')
+const request = require('./request')
 
 let ApiOcr = require('../SDK/ocr/index').ocr;
 
@@ -10,11 +10,11 @@ let SECRET_KEY = "jB4wFu42fxBbRlLjRbSpxrsAo9UbeGfS";
 let client = new ApiOcr(APP_ID, API_KEY, SECRET_KEY);
 
 const loadImage = async (url) => {
-    const res = await axios({
+    const res = await request.noFormat({
         url,
-        responseType: 'arraybuffer'
+        encoding: 'binary',
     })
-    return Buffer.from(res.data, 'binary').toString('base64')
+    return Buffer.from(res.body, 'binary').toString('base64')
 }
 
 /**
