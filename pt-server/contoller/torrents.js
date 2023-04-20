@@ -5,11 +5,13 @@ const media = require('../service/media')
 
 const torrents = async (ctx) => {
     let { search } = ctx.request.query;
-    if (!search) throw new Error('关键词不能为空')
+    if (!search) throw new Error('关键词不能为空');
+    let datalist = await pt.queryTorrents(search)
+    datalist.sort(function (prve, next) { return next.yaer < prve.yaer })
     ctx.body = {
         code: 0,
         msg: '成功',
-        data: await pt.queryTorrents(search)
+        data: datalist
     }
 }
 
