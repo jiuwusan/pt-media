@@ -10,11 +10,12 @@ const genPath = (p) => {
 
 const database = () => {
     if (!DATAJSON) {
+        let databasePath = genPath('/database/data.json');
         try {
-            let databasePath = genPath('/database/data.json');
             let dataStr = fs.readFileSync(databasePath, 'utf8');
             DATAJSON = JSON.parse(dataStr);
         } catch (error) {
+            fs.writeFileSync(databasePath, JSON.stringify({}), 'utf8')
             console.log('数据库读取失败');
         }
     }
