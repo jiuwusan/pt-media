@@ -1,0 +1,245 @@
+.page-box {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.seach-box {
+    width: 100%;
+    min-height: 50px;
+}
+
+.seach-box-fixed {
+    width: 100%;
+    height: 50px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #FFFFFF;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+}
+
+.seach-input {
+    display: flex;
+    flex-grow: 1;
+    display: inline-flex;
+    margin-right: 10px;
+    border: 1px solid #d9d9d9;
+    padding: 6px 11px;
+    border-radius: 4px;
+    outline: none;
+    color: rgba(0, 0, 0, .88);
+    font-size: 14px;
+}
+
+.seach-input:focus {
+    border: 1px solid #4096ff;
+}
+
+.search-btn {
+    padding: 6px 12px !important;
+    color: #fff;
+    background-color: #1677ff !important;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.torrent-list {
+    width: 100%;
+    overflow: scroll;
+    display: flex;
+    justify-content: center;
+}
+
+.torrent-list-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0px 15px 30px 15px;
+}
+
+.torrent-item {
+    height: 200px;
+    background-color: #FFFFFF;
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    max-width: 384px;
+}
+
+@media screen and (min-width:480px) {
+    .torrent-list-body {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .torrent-item {
+        width: 360px;
+    }
+
+    .torrent-item:nth-child(2n) {
+        margin-left: 15px;
+    }
+}
+
+@media screen and (min-width:825px) {
+    .torrent-list-body {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .torrent-item {
+        width: 360px;
+        margin-left: 15px;
+    }
+
+    .torrent-item:nth-child(3n+1) {
+        margin-left: 0px;
+    }
+}
+
+
+@media screen and (min-width:1100px) {
+    .torrent-list-body {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .torrent-item {
+        width: 360px;
+        margin-left: 15px;
+    }
+
+    .torrent-item:nth-child(3n+1) {
+        margin-left: 0px;
+    }
+}
+
+.torrent-poster {
+    width: 130px;
+    height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.torrent-info {
+    margin-left: 20px;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.torrent-info-row {
+    margin-top: 8px;
+}
+
+.torrent-info-title {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.torrent-label-0 {
+    padding: 2px 4px;
+    font-size: 12px;
+    color: #389e0d;
+    background: #f6ffed;
+    border: 1px solid #b7eb8f;
+    margin-right: 4px;
+    border-radius: 4px;
+}
+
+.torrent-label-1 {
+    padding: 2px 4px;
+    font-size: 12px;
+    color: #d48806;
+    background: #fffbe6;
+    border: 1px solid #ffe58f;
+    margin-right: 4px;
+    border-radius: 4px;
+}
+
+
+.torrent-label-2 {
+    padding: 2px 4px;
+    font-size: 12px;
+    color: #08979c;
+    background: #e6fffb;
+    border: 1px solid #87e8de;
+    margin-right: 4px;
+    border-radius: 4px;
+}
+
+.torrent-label-3 {
+    padding: 2px 4px;
+    font-size: 12px;
+    color: #0958d9;
+    background: #e6f4ff;
+    border: 1px solid #91caff;
+    margin-right: 4px;
+    border-radius: 4px;
+}
+
+.torrent-label-4 {
+    padding: 2px 4px;
+    font-size: 12px;
+    color: #531dab;
+    background: #f9f0ff;
+    border: 1px solid #d3adf7;
+    margin-right: 4px;
+    border-radius: 4px;
+}
+
+.torrent-label-5 {
+    padding: 2px 4px;
+    font-size: 12px;
+    color: #cf1322;
+    background: #fff1f0;
+    border: 1px solid #ffa39e;
+    margin-right: 4px;
+    border-radius: 4px;
+}
+
+.torrent-option {
+    margin-right: 5px;
+}
+
+.torrent-source-HDSky {
+    padding: 2px 4px;
+    font-size: 12px;
+    color: #FFFFFF;
+    background-color: rgb(255, 85, 0);
+    margin-left: 5px;
+    border-radius: 4px;
+}
+
+.torrent-source-MTeam {
+    padding: 2px 4px;
+    font-size: 12px;
+    color: #FFFFFF;
+    background-color: #d48806;
+    margin-left: 5px;
+    border-radius: 4px;
+}
+
+.torrent-source-HDFans {
+    padding: 2px 4px;
+    font-size: 12px;
+    color: #FFFFFF;
+    background-color: rgb(45, 183, 245);
+    margin-left: 5px;
+    border-radius: 4px;
+}
+
+.torrent-source-PTTime {
+    padding: 2px 4px;
+    font-size: 12px;
+    color: #FFFFFF;
+    background-color: rgb(16, 142, 233);
+    margin-left: 5px;
+    border-radius: 4px;
+}

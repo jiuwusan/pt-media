@@ -1,6 +1,7 @@
 const router = require('koa-router')();
 const pt = require('../service/pt')
 const ocrApi = require('../service/ocr')
+const media = require('../service/media')
 
 const torrents = async (ctx) => {
     let { search } = ctx.request.query;
@@ -31,8 +32,15 @@ const userLogin = async (ctx) => {
     }
 }
 
+const getPoster = async (ctx) => {
+    let { keyword, type } = ctx.request.query;
+    let posterUrl = await media.getPoster(keyword, type)
+    ctx.redirect(posterUrl);
+}
+
 router.get('/torrents', torrents);
 router.get('/ocr', ocr);
+router.get('/poster', getPoster);
 router.get('/userLogin', userLogin);
 
 module.exports = router
