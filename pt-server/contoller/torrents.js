@@ -11,7 +11,6 @@ const torrents = async (ctx) => {
     let datalist = await pt.queryTorrents(search)
     datalist.sort(function (prve, next) {
         let result = new Date(next.createTime).getTime() - new Date(prve.createTime).getTime();
-        console.log('排序结果',result)
         return result
     })
     ctx.body = {
