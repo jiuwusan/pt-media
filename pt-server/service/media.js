@@ -9,7 +9,7 @@ let posterCache = {}
  * @param {*} keywork 
  */
 const getPoster = async (keyword = '', type = 'tv', defaultPoster) => {
-    if (!keyword) return '';
+    if (!keyword.match(/[\u4e00-\u9fa5]+/g)) return '';
     let cacheKey = encodeURIComponent(keyword);
     // 优先都缓存
     if (posterCache[cacheKey]) return posterCache[cacheKey];
@@ -36,9 +36,10 @@ const getPoster = async (keyword = '', type = 'tv', defaultPoster) => {
     else
         posterUrl = tvPoster || moviePoster || ''
     if (posterUrl) {
-        posterUrl = imagehost + posterUrl.replace(/w\d+.*h\d+[^\/]+/g, 'w300_and_h450_bestv2');
+        posterUrl = imagehost + posterUrl.replace(/w\d+_[^\/]+/g, 'w300_and_h450_bestv2');
         posterCache[cacheKey] = posterUrl;
     }
+    request.sleep(200)
     return posterUrl
 }
 

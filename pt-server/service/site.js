@@ -40,7 +40,8 @@ const formatInfo = async (torrent, website) => {
         torrent.category = 'download'
     // 拉取海报
     if (torrent.poster && !(/^https?:\/\/.+/g).test(torrent.poster))
-        torrent.poster = website.hostname + torrent.poster
+        // torrent.poster = website.hostname + ((/^(.?\/).+/g).test(torrent.poster) ? torrent.poster.replace(/(.?\/)/, '') : torrent.poster)
+        torrent.poster = ''
     torrent.poster = await media.getPoster(torrent.shortTitle, torrent.category, torrent.poster)
     // 分辨率
     torrent.resolution = (torrent.title.match(/[\d]{3,4}p/gi) || [''])[0]
@@ -94,7 +95,9 @@ const HDFans = async ($, website) => {
                 torrent.source = 'HDFans'
                 // id
                 torrent.uid = queryUrlParams(torrent.details, 'id')
-                torrents.push(await formatInfo(torrent, website));
+                torrent = await formatInfo(torrent, website)
+                if (torrent.chinese.match(/[\u4e00-\u9fa5]+/g))
+                    torrents.push(torrent);
             }
         } catch (error) {
             console.log('存在资源异常')
@@ -152,7 +155,9 @@ const PTTime = async ($, website) => {
                 torrent.source = 'PTTime'
                 // id
                 torrent.uid = queryUrlParams(torrent.details, 'id')
-                torrents.push(await formatInfo(torrent, website));
+                torrent = await formatInfo(torrent, website)
+                if (torrent.chinese.match(/[\u4e00-\u9fa5]+/g))
+                    torrents.push(torrent);
             }
         } catch (error) {
             console.log('存在资源异常')
@@ -210,7 +215,9 @@ const MTeam = async ($, website) => {
                 torrent.source = 'MTeam'
                 // id
                 torrent.uid = queryUrlParams(torrent.details, 'id')
-                torrents.push(await formatInfo(torrent, website));
+                torrent = await formatInfo(torrent, website)
+                if (torrent.chinese.match(/[\u4e00-\u9fa5]+/g))
+                    torrents.push(torrent);
             }
         } catch (error) {
             console.log('存在资源异常')
@@ -274,7 +281,9 @@ const HDSky = async ($, website) => {
                 torrent.source = 'HDSky'
                 // id
                 torrent.uid = queryUrlParams(torrent.details, 'id')
-                torrents.push(await formatInfo(torrent, website));
+                torrent = await formatInfo(torrent, website)
+                if (torrent.chinese.match(/[\u4e00-\u9fa5]+/g))
+                    torrents.push(torrent);
             }
         } catch (error) {
             console.log('存在资源异常')
