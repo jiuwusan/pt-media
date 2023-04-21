@@ -8,14 +8,19 @@ let posterCache = {}
  * 获取 海报
  * @param {*} keywork 
  */
-const getPoster = async (keyword = '', type = 'tv') => {
+const getPoster = async (keyword = '', type = 'tv', defaultPoster) => {
     if (!keyword) return '';
     let cacheKey = encodeURIComponent(keyword);
     // 优先都缓存
     if (posterCache[cacheKey]) return posterCache[cacheKey];
+    // 存在 poster 则 不爬取
+    if (defaultPoster) {
+        posterCache[cacheKey] = defaultPoster;
+        return defaultPoster
+    }
     // 开始进行爬虫加载
     const tmdbhost = 'https://www.themoviedb.org';
-    const imagehost='https://image.tmdb.org';
+    const imagehost = 'https://image.tmdb.org';
     let cookie = `tmdb.prefs=%7B%22adult%22%3Afalse%2C%22i18n_fallback_language%22%3A%22en-US%22%2C%22locale%22%3A%22zh-CN%22%2C%22country_code%22%3A%22SG%22%2C%22timezone%22%3A%22Asia%2FSingapore%22%7D;`
     const { data } = await request.browser(`${tmdbhost}/search?query=${encodeURIComponent(keyword)}`, cookie)
     const $ = await cheerio.load(data);

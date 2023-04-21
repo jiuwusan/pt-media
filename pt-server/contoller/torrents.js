@@ -9,7 +9,11 @@ const torrents = async (ctx) => {
     let { search } = ctx.request.query;
     if (!search) throw new Error('关键词不能为空');
     let datalist = await pt.queryTorrents(search)
-    datalist.sort(function (prve, next) { return next.yaer < prve.yaer })
+    datalist.sort(function (prve, next) {
+        let result = new Date(next.createTime).getTime() - new Date(prve.createTime).getTime();
+        console.log('排序结果',result)
+        return result
+    })
     ctx.body = {
         code: 0,
         msg: '成功',
@@ -56,7 +60,7 @@ const download = async (ctx) => {
 }
 
 const toJellyfin = async (ctx) => {
-    let { url, source, uid } = ctx.request.query || {};
+    let { url, source, uid, category } = ctx.request.query || {};
     if (!url || !source || !uid)
         throw new Error('参数异常')
     url = decodeURIComponent(url)
@@ -65,7 +69,7 @@ const toJellyfin = async (ctx) => {
     ctx.body = {
         code: 0,
         msg: '成功',
-        data: await qb.add(data, filename)
+        data: await qb.add(data, filename, category)
 
     }
 }

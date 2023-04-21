@@ -1,3 +1,5 @@
+const media = require('./media')
+
 /**
  * 获取链接参数
  * @param {*} url 
@@ -12,7 +14,7 @@ function queryUrlParams(url, params) {
 /**
  * 格式化信息
  */
-const formatInfo = (torrent) => {
+const formatInfo = async (torrent, website) => {
     let pattern1 = /(全|第)[1234567890一二三四五六七八九十零]+([-,，][1234567890一二三四五六七八九十零]+)?(季|集)/g;
     let pattern2 = /[\u4e00-\u9fa5：:()\（\）\d]+/g;
     const match = (str, keyword) => str.indexOf(keyword) > -1;
@@ -27,6 +29,21 @@ const formatInfo = (torrent) => {
     if (torrent.shortTitle.match(/([劇剧版:]{2})|([禁转]{2})|([台式]{2})/g))
         torrent.shortTitle = titles[1]
     torrent.year = (torrent.title.match(/[\s.][\d]{4}[\s.]/gi) || [''])[0].replace(/[\s.]/g, '');
+    // 处理 分类
+    if (torrent.mediaType.match(/(tv)|视|剧|劇/gi))
+        torrent.category = 'tv'
+    else if (torrent.mediaType.match(/(movie)|影/gi))
+        torrent.category = 'movie'
+    else if (torrent.mediaType.match(/(ani)|漫/gi))
+        torrent.category = 'ani'
+    else
+        torrent.category = 'download'
+    // 拉取海报
+    if (!(/^https?:\/\/.+/g).test(torrent.poster))
+        torrent.poster = website.hostname + torrent.poster
+    torrent.poster = await media.getPoster(torrent.shortTitle, torrent.category, torrent.poster)
+    // 分辨率
+    torrent.resolution = (torrent.title.match(/[\d]{3,4}p/gi) || [''])[0]
     return torrent
 }
 
@@ -36,7 +53,7 @@ const formatInfo = (torrent) => {
  * @param {*} $ 
  * @returns 
  */
-const HDFans = async ($) => {
+const HDFans = async ($, website) => {
     let torrents = [];
     let trs = $('.torrents').children('tbody').children('tr')
     for (let i = 0; i < trs.length; i++) {
@@ -45,7 +62,12 @@ const HDFans = async ($) => {
                 let torrent = {};
                 const tds = $(trs[i]).children('.rowfollow');
                 let torrentInfo = $(tds[1]).children('.torrentname').children('tbody').children('tr').children('td')
+                // 类型
                 torrent.mediaType = $(tds[0]).children('a').children('img').attr('title')
+                // 添加时间
+                torrent.createTime = $(tds[3]).children('span').attr('title')
+                // 做种人数
+                torrent.seeding = $(tds[5]).find('a').text() || 0
                 // 英文标题
                 torrent.title = $(torrentInfo[0]).children('a').attr('title')
                 // 详细路径
@@ -72,7 +94,7 @@ const HDFans = async ($) => {
                 torrent.source = 'HDFans'
                 // id
                 torrent.uid = queryUrlParams(torrent.details, 'id')
-                torrents.push(formatInfo(torrent));
+                torrents.push(await formatInfo(torrent, website));
             }
         } catch (error) {
             console.log('存在资源异常')
@@ -88,7 +110,7 @@ const HDFans = async ($) => {
  * @param {*} $ 
  * @returns 
  */
-const PTTime = async ($) => {
+const PTTime = async ($, website) => {
     let torrents = [];
     let trs = $('.torrents').children('tbody').children('tr')
     for (let i = 0; i < trs.length; i++) {
@@ -98,6 +120,10 @@ const PTTime = async ($) => {
                 const tds = $(trs[i]).children('.rowfollow');
                 // 类别
                 torrent.mediaType = $(tds[0]).children('a').children('img').attr('title')
+                // 添加时间
+                torrent.createTime = $(tds[4]).children('span').attr('title')
+                // 做种人数
+                torrent.seeding = $(tds[6]).find('a').text() || 0
                 // 相关信息
                 let torrentInfo = $(tds[1]).children('.torrentname').children('tbody').children('tr').children('.embedded')
                 // 海报
@@ -126,7 +152,7 @@ const PTTime = async ($) => {
                 torrent.source = 'PTTime'
                 // id
                 torrent.uid = queryUrlParams(torrent.details, 'id')
-                torrents.push(formatInfo(torrent));
+                torrents.push(await formatInfo(torrent, website));
             }
         } catch (error) {
             console.log('存在资源异常')
@@ -142,7 +168,7 @@ const PTTime = async ($) => {
  * @param {*} $ 
  * @returns 
  */
-const MTeam = async ($) => {
+const MTeam = async ($, website) => {
     let torrents = [];
     let trs = $('.torrents').children('tbody').children('tr')
     for (let i = 0; i < trs.length; i++) {
@@ -152,6 +178,10 @@ const MTeam = async ($) => {
                 const tds = $(trs[i]).children('td');
                 // 类别
                 torrent.mediaType = $(tds[0]).children('a').children('img').attr('title')
+                // 添加时间
+                torrent.createTime = $(tds[3]).children('span').attr('title')
+                // 做种人数
+                torrent.seeding = $(tds[5]).find('a').text() || 0
                 // 海报
                 torrent.poster = $(tds[1]).children('.torrentname').children('tbody').children('tr').children('.torrentimg').find('img').attr('src')
                 // 相关信息
@@ -180,7 +210,7 @@ const MTeam = async ($) => {
                 torrent.source = 'MTeam'
                 // id
                 torrent.uid = queryUrlParams(torrent.details, 'id')
-                torrents.push(formatInfo(torrent));
+                torrents.push(await formatInfo(torrent, website));
             }
         } catch (error) {
             console.log('存在资源异常')
@@ -196,7 +226,7 @@ const MTeam = async ($) => {
  * @param {*} $ 
  * @returns 
  */
-const HDSky = async ($) => {
+const HDSky = async ($, website) => {
     let torrents = [];
     let trs = $('.torrents').children('tbody').children('tr')
     for (let i = 0; i < trs.length; i++) {
@@ -206,6 +236,10 @@ const HDSky = async ($) => {
                 const tds = $(trs[i]).children('.rowfollow');
                 // 类别
                 torrent.mediaType = $(tds[0]).children('a').children('img').attr('title')
+                // 添加时间
+                torrent.createTime = $(tds[3]).children('span').attr('title')
+                // 做种人数
+                torrent.seeding = $(tds[5]).find('a').text() || 0
                 // 海报
                 // torrent.poster = $(tds[1]).children('.torrentname').children('tbody').children('tr').children('.torrentimg').find('img').attr('src')
                 // 相关信息
@@ -240,7 +274,7 @@ const HDSky = async ($) => {
                 torrent.source = 'HDSky'
                 // id
                 torrent.uid = queryUrlParams(torrent.details, 'id')
-                torrents.push(formatInfo(torrent));
+                torrents.push(await formatInfo(torrent, website));
             }
         } catch (error) {
             console.log('存在资源异常')

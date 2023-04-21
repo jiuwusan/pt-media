@@ -121,7 +121,7 @@ const queryTorrents = async (search = '') => {
         try {
             const body = await loadWebsite(item, search)
             const $ = await cheerio.load(body);
-            torrents.push.apply(torrents, await site[item.name]($));
+            torrents.push.apply(torrents, await site[item.name]($, item));
         } catch (error) {
             console.log(error)
         }
@@ -177,7 +177,8 @@ const download = async (url, source, uid) => {
 
 // 轮询
 const polling = () => {
-    console.log('开始轮询');
+    console.log('自动轮询 -> ', new Date())
+    queryTorrents('最新影视')
 }
 
 module.exports = {
