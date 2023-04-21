@@ -123,7 +123,7 @@ const addTorrent = async (data, name, mediaType) => {
         if (body.indexOf('Forbidden') > -1) {
             await qbLogin();
             request.sleep(1000);
-            return req(binaryData, filename)
+            return req(binaryData, filename,category)
         } else if (body.indexOf('Fail') > -1) {
             throw new Error('添加失败')
         }
