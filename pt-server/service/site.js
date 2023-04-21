@@ -39,7 +39,7 @@ const formatInfo = async (torrent, website) => {
     else
         torrent.category = 'download'
     // 拉取海报
-    if (!(/^https?:\/\/.+/g).test(torrent.poster))
+    if (torrent.poster && !(/^https?:\/\/.+/g).test(torrent.poster))
         torrent.poster = website.hostname + torrent.poster
     torrent.poster = await media.getPoster(torrent.shortTitle, torrent.category, torrent.poster)
     // 分辨率
