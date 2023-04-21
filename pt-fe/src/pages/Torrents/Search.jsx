@@ -11,7 +11,11 @@ const Search = (props) => {
     return <div className="seach-box">
         <div className="seach-box-fixed">
             <input ref={InputDom} type="text" className='seach-input' placeholder='请输入关键词' />
-            <Button onClick={handleClick} className='search-btn'>搜索{loading && '中'}</Button>
+            <Button onClick={handleClick} className='search-btn' loading={loading}>
+                <span>
+                    搜索{loading && '中'}
+                </span>
+            </Button>
         </div>
     </div>
 }

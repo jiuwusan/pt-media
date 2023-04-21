@@ -5,10 +5,10 @@ const Listview = (props) => {
 
     return <div className="torrent-list">
         <div className='torrent-list-body'>
-            {
-                datalist.map((item) => <Torrent key={item.uid} data={item}></Torrent>)
-            }
-        </div>
+                {
+                    datalist.map((item) => <Torrent key={item.uid} data={item}></Torrent>)
+                }
+            </div>
     </div>
 }
 

@@ -1,8 +1,18 @@
 import Poster from './Poster'
 import { Button } from '../../component'
+import { useJellyfin } from './hooks';
 
 const Torrent = (props) => {
-    const { data: { year, mediaType, shortTitle, chinese, episode, season, source, label, free, expires } } = props
+    const { data: { year, mediaType, shortTitle, chinese, episode, season, source, label, download, uid } } = props
+
+    //添加到jellyfin
+    const [loading, toJellyfin] = useJellyfin({ download, uid, source })
+
+    // 下载
+    const handleDownload = () => {
+        window.open(`/pt-api/download?url=${encodeURIComponent(download)}&source=${source}&uid=${uid}`);
+    }
+
     return <div className="torrent-item">
         <Poster type={mediaType} title={shortTitle}></Poster>
         <div className='torrent-info'>
@@ -12,16 +22,15 @@ const Torrent = (props) => {
                 <span>{episode}</span>
             </div>
             <div className='torrent-info-row'>
-                <span>{mediaType}</span>
+                <span>类型：{mediaType}</span>
                 <span className={`torrent-source-${source}`}>{source}</span>
             </div>
-            <div className='torrent-info-row'>{free ? (<><span>Free</span><span>expires</span></>) : ''}</div>
-            <div className='torrent-info-row'>
-                {label.map((val, idx) => <span key={val} className={`torrent-label-${idx}`}>{val}</span>)}
+            <div className='torrent-info-row torrent-label-list'>
+                {label.map((val, idx) => <span key={val} className={`torrent-label`}>{val}</span>)}
             </div>
             <div className='torrent-info-row'>
-                <Button className='torrent-option'>下载种子</Button>
-                <Button className='torrent-option'>To Jellyfin</Button>
+                <Button className='torrent-option' onClick={handleDownload}>下载种子</Button>
+                <Button className='torrent-option' onClick={toJellyfin} loading={loading}>To Jellyfin</Button>
             </div>
         </div>
     </div>

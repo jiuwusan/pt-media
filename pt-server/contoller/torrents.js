@@ -2,6 +2,8 @@ const router = require('koa-router')();
 const pt = require('../service/pt')
 const ocrApi = require('../service/ocr')
 const media = require('../service/media')
+const qb = require('../service/qBittorrent')
+const fs = require('fs')
 
 const torrents = async (ctx) => {
     let { search } = ctx.request.query;
@@ -40,9 +42,38 @@ const getPoster = async (ctx) => {
     ctx.redirect(posterUrl);
 }
 
+const download = async (ctx) => {
+    let { url, source, uid } = ctx.request.query || {};
+    if (!url || !source || !uid)
+        throw new Error('参数异常')
+    url = decodeURIComponent(url)
+    let { headers, data } = await pt.download(url, source, uid);
+    // 设置头部
+    for (const key in headers) {
+        ctx.set(key, headers[key])
+    }
+    ctx.body = data
+}
+
+const toJellyfin = async (ctx) => {
+    let { url, source, uid } = ctx.request.query || {};
+    if (!url || !source || !uid)
+        throw new Error('参数异常')
+    url = decodeURIComponent(url)
+    let { headers, data } = await pt.download(url, source, uid);
+    let filename = headers['content-disposition'].match(/([^"]+)/g)[1]
+    ctx.body = {
+        code: 0,
+        msg: '成功',
+        data: await qb.add(data, filename)
+
+    }
+}
+
 router.get('/torrents', torrents);
 router.get('/ocr', ocr);
 router.get('/poster', getPoster);
 router.get('/userLogin', userLogin);
-
+router.get('/toJellyfin', toJellyfin);
+router.get('/download', download);
 module.exports = router

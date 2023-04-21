@@ -58,9 +58,24 @@ const website = () => {
     })
 }
 
+/**
+ * 获取 qb 信息
+ * @returns 
+ */
+const qb = () => {
+    let data = database();
+    data.qBittorrent.setCookie = function (cookie) {
+        data.qBittorrent.cookie = cookie
+        update(data)
+        return data.qBittorrent;
+    }
+    return data.qBittorrent
+}
+
 
 module.exports = {
     database,
     website,
-    setCookie
+    setCookie,
+    qb
 }

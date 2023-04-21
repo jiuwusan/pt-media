@@ -19,3 +19,20 @@ export const useTorrents = () => {
 
     return [datalist, submit, loading]
 }
+
+export const useJellyfin = (data) => {
+    let { download: url, source, uid } = data;
+    const [loading, setLoading] = useState(false);
+
+    const download = async () => {
+        let rs = await torrentsApi.toJellyfin({ url: encodeURIComponent(url), source, uid })
+        if (loading) return // 上一次结果未返回
+        setLoading(true)
+        if (rs.code === 0)
+            // 添加成功
+            window.alert('添加成功，正在下载中 ... ')
+        setLoading(false)
+    }
+
+    return [loading, download]
+}

@@ -24,7 +24,11 @@ function parseCookie(cookie) {
  * @param {*} cookie 
  * @returns 
  */
-const browser = (url, cookie = '') => {
+const browser = (url, cookie = '', options) => {
+    if (typeof cookie == 'object') {
+        options = cookie;
+        cookie = ''
+    }
     // console.log('浏览器 -> ',url)
     return new Promise((resolve, reject) => {
         // 发送请求
@@ -32,19 +36,24 @@ const browser = (url, cookie = '') => {
             url,
             method: 'GET',
             headers: {
-                cookie, 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
-            }
+                cookie,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
+            },
+            ...options
         }, (error, response, data) => {
             if (!error) {
                 // 新的 cookie
                 let newCookie = response.headers['set-cookie'] || cookie;
                 newCookie = newCookie.toString();
-                console.log('newCookie==',newCookie);
+                console.log('访问成功 --> ', url);
                 resolve({
                     data,
-                    cookie: newCookie !== cookie ? newCookie : ''
+                    cookie: newCookie !== cookie ? newCookie : '',
+                    headers: response.headers
                 })
+                return
             }
+            console.log('访问失败 --> ', url);
             reject(error)
         })
     })

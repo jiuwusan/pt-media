@@ -38,8 +38,9 @@ const takeLogin = async (url, form) => {
 
 // 用户登录
 const postLogin = async (website) => {
-    const { data, cookie } = await request.browser(`${website.hostname}${website.login}`)
-    console.log()
+    const { data } = await request.browser(`${website.hostname}${website.login}`)
+    if (match(body, 'Just a moment'))
+        throw new Error('M-Team 站 cookie 过期，需要手动更新')
     const $ = await cheerio.load(data);
     // 取到登录所需参数
     let codeHost = $($('form').get(1)).find('img').attr('src')
@@ -100,8 +101,6 @@ const loadWebsite = async (website, keyword) => {
             await request.sleep(1000);
             return await loadweb(web, search)
         }
-        // if (cookie !== web.cookie)
-        //     web.setCookie(cookie);
         return data
     }
     return await loadweb(website, keyword)
@@ -131,6 +130,50 @@ const queryTorrents = async (search = '') => {
     return torrents
 }
 
+/**
+ * 加载 列表
+ * @param {*} website 
+ * @param {*} search 
+ */
+const download = async (url, source, uid) => {
+    let websites = database.website();
+    let regExp = /^https?:\/\/.+/g;
+    let website = ''
+    for (let i = 0; i < websites.length; i++) {
+        const item = websites[i];
+        if (source === item.name) {
+            website = item;
+            if (!regExp.test(url))
+                url = item.hostname + url
+            break;
+        }
+
+    }
+    // 尝试 获取的次数
+    let count = 0
+    const loadFile = async (web, loadurl) => {
+        if (count > 3) throw new Error('文件下载失败')
+        count++;
+        const match = (str, keyword) => str.indexOf(keyword) > -1;
+        let { data, headers } = await request.browser(loadurl, web.cookie, { encoding: null });
+        if (match(data, 'name="username"') && match(data, 'name="password"')) {
+            // 登录失败，重新获取 cookie
+            web = web.setCookie(await userLogin(web));
+            await request.sleep(1000);
+            return await loadweb(web, search)
+        }
+        return {
+            headers: {
+                'content-disposition': headers['content-disposition'],
+                'transfer-encoding': headers['transfer-encoding'],
+                'content-type': headers['content-type']
+            },
+            data
+        }
+    }
+
+    return await loadFile(website, url)
+}
 
 // 轮询
 const polling = () => {
@@ -140,5 +183,6 @@ const polling = () => {
 module.exports = {
     polling,
     queryTorrents,
-    userLogin
+    userLogin,
+    download
 }

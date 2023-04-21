@@ -15,7 +15,8 @@ const { genApi } = new ApiGenerator(request, '', (config) => {
  */
 const torrentsApi = genApi({
     // 获取列表
-    querylist: '/pt-api/torrents'
+    querylist: '/pt-api/torrents',
+    toJellyfin: '/pt-api/toJellyfin'
 })
 
 const API = {
