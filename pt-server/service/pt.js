@@ -191,7 +191,7 @@ const uploader = async (torrents) => {
         try {
             // 当前种子免费时间到了
             if (Date.now() > new Date(item.expires).getTime()) {
-                await qBittorrent.delTorrent(item.hash, true);
+                await qBittorrent.del(item.hash, true);
                 seedings.splice(i, 1);
                 i--;
             }
