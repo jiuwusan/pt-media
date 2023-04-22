@@ -1,9 +1,12 @@
 const router = require('koa-router')();
 const pt = require('../service/pt')
-const ocrApi = require('../service/ocr')
 const media = require('../service/media')
 const qb = require('../service/qBittorrent')
 
+/**
+ * 种子列表
+ * @param {*} ctx 
+ */
 const torrents = async (ctx) => {
     let { search } = ctx.request.query;
     if (!search) throw new Error('关键词不能为空');
@@ -19,31 +22,20 @@ const torrents = async (ctx) => {
     }
 }
 
-const ocr = async (ctx) => {
-    let result = await ocrApi.ocrImageCode('https://hdfans.org/image.php?action=regimage&imagehash=f6050bea705015d4edd59a78a4ff6d57&secret=');
-    ctx.body = {
-        code: 0,
-        msg: '成功',
-        data: result
-    }
-}
-
-const userLogin = async (ctx) => {
-    let data = await pt.userLogin()
-
-    ctx.body = {
-        code: 0,
-        msg: '成功',
-        data
-    }
-}
-
+/**
+ * 海报
+ * @param {*} ctx 
+ */
 const getPoster = async (ctx) => {
     let { keyword, type } = ctx.request.query;
     let posterUrl = await media.getPoster(keyword, type)
     ctx.redirect(posterUrl);
 }
 
+/**
+ * 下载
+ * @param {*} ctx 
+ */
 const download = async (ctx) => {
     let { url, source, uid } = ctx.request.query || {};
     if (!url || !source || !uid)
@@ -57,6 +49,10 @@ const download = async (ctx) => {
     ctx.body = data
 }
 
+/**
+ * 添加到jellyfin
+ * @param {*} ctx 
+ */
 const toJellyfin = async (ctx) => {
     let { url, source, uid, category } = ctx.request.query || {};
     if (!url || !source || !uid)
@@ -72,19 +68,22 @@ const toJellyfin = async (ctx) => {
     }
 }
 
-const polling = async (ctx) => {
+/**
+ * TEST 接口
+ * @param {*} ctx 
+ */
+const apitest = async (ctx) => {
     ctx.body = {
         code: 0,
         msg: '成功',
-        data: await pt.polling()
+        data: await qb.delete('015e82c426ca4009b5f96995f4207337e7cd2c61', true)
     }
 }
 
 router.get('/torrents', torrents);
-router.get('/ocr', ocr);
 router.get('/poster', getPoster);
-router.get('/userLogin', userLogin);
 router.get('/toJellyfin', toJellyfin);
 router.get('/download', download);
-router.get('/polling', polling);
+router.get('/apitest', apitest);
+
 module.exports = router

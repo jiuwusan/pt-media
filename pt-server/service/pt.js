@@ -182,7 +182,7 @@ const download = async (url, source, uid) => {
 
 // 轮询
 const polling = async () => {
-    
+
     let { seedings = [] } = database.data();
     // 将过期的移除
     for (let i = 0; i < seedings.length; i++) {
@@ -208,8 +208,11 @@ const polling = async () => {
             if (seedings.length > 10) break;
             const { download: url, source, uid, expires, seeding } = torrents[i];
             // 存在则跳过,或者做种人数大于等于10 跳过
-            if (seedings.find((item) => item.uid === uid && item.source === source) || seeding >= 10)
+            if (seedings.find((item) => item.uid === uid && item.source === source) || seeding >= 10) {
+                console.log(`source=${source},uid=${uid},seeding=${seeding} 不符合要求`)
                 continue;
+            }
+
             try {
                 // 下载文件流
                 let load = await download(url, source, uid);

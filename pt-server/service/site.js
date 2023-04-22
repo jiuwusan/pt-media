@@ -47,6 +47,9 @@ const formatInfo = async (torrent, website) => {
         torrent.poster = await media.getPoster(torrent.shortTitle, torrent.category, torrent.poster)
     // 分辨率
     torrent.resolution = (torrent.title.match(/[\d]{3,4}p/gi) || [''])[0]
+    // 转换为 数字
+    torrent.seeding = Number(torrent.seeding.replace(/,/g, ''))
+    
     return torrent
 }
 
@@ -102,7 +105,7 @@ const HDFans = async ($, website) => {
                     torrents.push(torrent);
             }
         } catch (error) {
-            console.log('存在资源异常',error)
+            console.log('存在资源异常', error)
         }
     }
 
@@ -162,7 +165,7 @@ const PTTime = async ($, website) => {
                     torrents.push(torrent);
             }
         } catch (error) {
-            console.log('存在资源异常',error)
+            console.log('存在资源异常', error)
         }
     }
 
@@ -222,7 +225,7 @@ const MTeam = async ($, website) => {
                     torrents.push(torrent);
             }
         } catch (error) {
-            console.log('存在资源异常',error)
+            console.log('存在资源异常', error)
         }
     }
 
@@ -288,7 +291,7 @@ const HDSky = async ($, website) => {
                     torrents.push(torrent);
             }
         } catch (error) {
-            console.log('存在资源异常',error)
+            console.log('存在资源异常', error)
         }
     }
 
