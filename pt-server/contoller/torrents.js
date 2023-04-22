@@ -3,7 +3,6 @@ const pt = require('../service/pt')
 const ocrApi = require('../service/ocr')
 const media = require('../service/media')
 const qb = require('../service/qBittorrent')
-const fs = require('fs')
 
 const torrents = async (ctx) => {
     let { search } = ctx.request.query;
@@ -73,10 +72,19 @@ const toJellyfin = async (ctx) => {
     }
 }
 
+const polling = async (ctx) => {
+    ctx.body = {
+        code: 0,
+        msg: '成功',
+        data: await pt.polling()
+    }
+}
+
 router.get('/torrents', torrents);
 router.get('/ocr', ocr);
 router.get('/poster', getPoster);
 router.get('/userLogin', userLogin);
 router.get('/toJellyfin', toJellyfin);
 router.get('/download', download);
+router.get('/polling', polling);
 module.exports = router

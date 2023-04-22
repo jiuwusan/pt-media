@@ -23,6 +23,11 @@ const takeLogin = async (url, form) => {
     return response.headers['set-cookie'].toString()
 }
 
+/**
+ * 根路径
+ * @param {*} p 
+ * @returns 
+ */
 const genPath = (p) => {
     let root = (__dirname + '').replace(/(\\|\/)service/, '')
     return path.join(root, p);
@@ -69,23 +74,49 @@ const getTorrentPath = (data, filename) => {
  * 浏览器访问
  * @param {*} fn 
  */
-const qbBrowser = async (fn) => {
+const qbBrowser = async (opt) => {
     let count = 0;
+    async function withCookie(options) {
+        // 次数+1
+        count++;
+        let qb = database.qb();
+        if (!(/^https?:\/\/.+/g).test(options.url))
+            options.url = qb.hostname + options.url
+        // 添加 cookie
+        options.headers = {
+            cookie: qb.cookie,
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+            ...(options.headers || {})
+        }
+        let res = await request(options) || ''
+        // 登录失效
+        if (res.statusCode === 403 && count > 3)
+            throw new Error('qBittorrent 登录失败')
+        else if (res.statusCode === 403) {
+            // 重新获取 token
+            options.headers.cookie = await qbLogin()
+            // 延迟取 cookie
+            await request.sleep(2000)
+            // 再次 发起请求
+            return await withCookie(options)
+        } else if (res.data.indexOf('Fail') > -1)
+            throw new Error('qBittorrent 操作失败')
+        // 返回值
+        return res.data
+    }
+    return await withCookie(opt)
 }
 
+/**
+ * 获取最新一条数据
+ * 
+ * @returns 
+ */
 const getLastDowning = async () => {
-    let qb = database.qb();
-    let data = await request({
-        url: qb.hostname + '/api/v2/torrents/info?filter=downloading&sort=added_on',
-        headers: {
-            cookie: qb.cookie,
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
-        }
-    })
+    let data = await qbBrowser({ url: '/api/v2/torrents/info?sort=added_on&reverse=true' })
     let torrents = []
     if (data)
         torrents = JSON.parse(data)
-    console.log('getLastDowning--', data)
     return torrents[0]
 }
 
@@ -95,50 +126,43 @@ const getLastDowning = async () => {
  * @param {*} binaryFile 
  * @returns 
  */
-const addTorrent = async (data, name, mediaType) => {
-    let count = 0
-    const req = async (binaryData, filename, category = 'download') => {
-        if (count > 2) throw new Error('登录失败')
-        count++;
-        let qb = database.qb();
-        let formData = {
-            'fileselect[]': fs.createReadStream(await getTorrentPath(binaryData, filename)),
-            autoTMM: 'true',
-            rename: '',// 重命名
-            category,//分类
-            paused: 'false',//开始
-            stopCondition: 'None',
-            contentLayout: 'Original',
-            dlLimit: 30000000,
-            upLimit: 3000000
-        }
-        // let cookie = await qbLogin()
-        let { body } = await request.noFormat({
-            url: qb.hostname + '/api/v2/torrents/add', formData, method: 'POST', headers: {
-                cookie: qb.cookie,
-                'content-type': 'multipart/form-data',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
-            }
-        })
-        if (body.indexOf('Forbidden') > -1) {
-            await qbLogin();
-            request.sleep(1000);
-            return req(binaryData, filename,category)
-        } else if (body.indexOf('Fail') > -1) {
-            throw new Error('添加失败')
-        }
-        request.sleep(2000);
-        // return await getLastDowning()
-        return body
+const addTorrent = async (binaryData, filename, category = 'download') => {
+
+    let formData = {
+        'torrents': fs.createReadStream(await getTorrentPath(binaryData, filename)),
+        autoTMM: 'true',
+        rename: '',// 重命名
+        category,//分类
+        paused: 'false',//开始
+        stopCondition: 'None',
+        contentLayout: 'Original',
+        dlLimit: 30000000,
+        upLimit: 3000000
     }
-    return req(data, name, mediaType)
+
+    // 发起请求
+    await qbBrowser({ url: '/api/v2/torrents/add', formData, method: 'POST', headers: { 'content-type': 'multipart/form-data' } })
+    // 获取最新一条数据
+    request.sleep(3000);
+    let torrent = await getLastDowning()
+    console.log(`成功添加 -> 分类：${category}，Hash：${torrent.hash}，种子：${filename}`)
+    return torrent
 }
 
-const delTorrent = (uid) => {
-
+/**
+ * 删除 种子
+ * @param {*} hashes 
+ */
+const delTorrent = async (hashes, deleteFiles = false) => {
+    if (Object.prototype.toString.call(hashes) === '[object Array]')
+        hashes = hashes.join('|')
+    let form = { hashes, deleteFiles }
+    let result = await qbBrowser({ url: `/api/v2/torrents/delete`, form, method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' } })
+    console.log(`成功删除 -> Hash = ${hashes}`)
+    return result
 }
 
 module.exports = {
     add: addTorrent,
-    del: delTorrent
+    delete: delTorrent
 }

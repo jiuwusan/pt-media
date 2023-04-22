@@ -95,9 +95,9 @@ const cusRequest = (options) => {
         // 发送请求
         request(options, (error, response, data) => {
             if (!error) {
-                if (response.statusCode == 200)
-                    resolve(data)
-                reject(response)
+                // if (response.statusCode == 200)
+                response.data = data;
+                resolve(response)
             }
             reject(error)
         })

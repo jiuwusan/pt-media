@@ -15,13 +15,13 @@ function queryUrlParams(url, params) {
  * 格式化信息
  */
 const formatInfo = async (torrent, website) => {
-    let pattern1 = /(全|第)[1234567890一二三四五六七八九十零]+([-,，][1234567890一二三四五六七八九十零]+)?(季|集)/g;
+    let pattern1 = /(全|第)[1234567890一二三四五六七八九十零]+([-,，][1234567890一二三四五六七八九十零]+)?(季|集|期)(上|下)?/gi;
     let pattern2 = /[\u4e00-\u9fa5：:()\（\）\d]+/g;
     const match = (str, keyword) => str.indexOf(keyword) > -1;
     (torrent.chinese.match(pattern1) || []).forEach((item) => {
         if (match(item, '季'))
             torrent.season = item
-        else if (match(item, '集'))
+        else if (match(item, '集') || match(item, '期'))
             torrent.episode = item
     })
     let titles = torrent.chinese.match(pattern2) || [];
@@ -42,7 +42,9 @@ const formatInfo = async (torrent, website) => {
     if (torrent.poster && !(/^https?:\/\/.+/g).test(torrent.poster))
         // torrent.poster = website.hostname + ((/^(.?\/).+/g).test(torrent.poster) ? torrent.poster.replace(/(.?\/)/, '') : torrent.poster)
         torrent.poster = ''
-    torrent.poster = await media.getPoster(torrent.shortTitle, torrent.category, torrent.poster)
+    // 刷上传不需要取海报
+    if (!website.uploading)
+        torrent.poster = await media.getPoster(torrent.shortTitle, torrent.category, torrent.poster)
     // 分辨率
     torrent.resolution = (torrent.title.match(/[\d]{3,4}p/gi) || [''])[0]
     return torrent
@@ -100,7 +102,7 @@ const HDFans = async ($, website) => {
                     torrents.push(torrent);
             }
         } catch (error) {
-            console.log('存在资源异常')
+            console.log('存在资源异常',error)
         }
     }
 
@@ -160,7 +162,7 @@ const PTTime = async ($, website) => {
                     torrents.push(torrent);
             }
         } catch (error) {
-            console.log('存在资源异常')
+            console.log('存在资源异常',error)
         }
     }
 
@@ -220,7 +222,7 @@ const MTeam = async ($, website) => {
                     torrents.push(torrent);
             }
         } catch (error) {
-            console.log('存在资源异常')
+            console.log('存在资源异常',error)
         }
     }
 
@@ -286,7 +288,7 @@ const HDSky = async ($, website) => {
                     torrents.push(torrent);
             }
         } catch (error) {
-            console.log('存在资源异常')
+            console.log('存在资源异常',error)
         }
     }
 

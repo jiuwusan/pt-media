@@ -23,12 +23,23 @@ const database = () => {
 }
 
 /**
- * 异步写入
- * @param {*} database 
+ * 覆盖更新
+ * @param {*} newData
  */
-const update = async (database) => {
+const update = async (newData) => {
+    DATAJSON = newData;
     let databasePath = genPath('/database/data.json');
-    fs.writeFileSync(databasePath, JSON.stringify(database), 'utf8')
+    fs.writeFileSync(databasePath, JSON.stringify(newData), 'utf8')
+}
+
+/**
+ * 更新数据
+ * @param {*} newData
+ */
+const setData = async (newData = {}) => {
+    let lastData = { ...DATAJSON, ...newData }
+    let databasePath = genPath('/database/data.json');
+    fs.writeFileSync(databasePath, JSON.stringify(lastData), 'utf8')
 }
 
 /**
@@ -74,8 +85,10 @@ const qb = () => {
 
 
 module.exports = {
-    database,
+    data: database,
     website,
     setCookie,
-    qb
+    qb,
+    update,
+    setData
 }

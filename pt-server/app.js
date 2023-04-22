@@ -29,9 +29,9 @@ app.use(async (ctx, next) => {
     } catch (error) {
        console.log('error -> ',error)
         ctx.body = {
-            code: error.code || 99,
-            msg: error.message,
-            data: error.data
+            code: error?.code || 99,
+            msg: error?.message || '系统错误',
+            data: error?.data
         }
     }
 });

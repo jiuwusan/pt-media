@@ -3,6 +3,7 @@ const database = require('./database')
 const ocrApi = require('./ocr')
 const request = require('./request')
 const site = require('./site')
+const qBittorrent = require('./qBittorrent')
 
 /**
  * 获取链接参数
@@ -112,11 +113,14 @@ const loadWebsite = async (website, keyword) => {
  * @param {*} search 
  * @returns 
  */
-const queryTorrents = async (search = '') => {
+const queryTorrents = async (search = '', uploader = false) => {
     let websites = database.website();
     let torrents = [];
     for (let i = 0; i < websites.length; i++) {
         const item = websites[i];
+        if (uploader && !item.uploading)
+            continue;
+        item.uploading = uploader
         // 关键词编码
         try {
             const body = await loadWebsite(item, search)
@@ -175,10 +179,56 @@ const download = async (url, source, uid) => {
     return await loadFile(website, url)
 }
 
+/**
+ * 添加到队列中
+ * @param {*} torrents 
+ */
+const uploader = async (torrents) => {
+    let { seedings = [] } = database.data();
+    // 将过期的移除
+    for (let i = 0; i < seedings.length; i++) {
+        let item = seedings[i];
+        try {
+            // 当前种子免费时间到了
+            if (Date.now() > new Date(item.expires).getTime()) {
+                await qBittorrent.delTorrent(item.hash, true);
+                seedings.splice(i, 1);
+                i--;
+            }
+        } catch (error) {
+            console.log(`uploader delete error (source=${item.source},uid=${item.uid}) : `, error)
+        }
+    }
+    //开始添加
+    for (let i = 0; i < torrents.length; i++) {
+        const { download: url, source, uid, expires } = torrents[i];
+        // 存在则跳过
+        if (seedings.find((item) => item.uid === uid && item.source === source))
+            continue;
+        try {
+            // 下载文件流
+            let load = await download(url, source, uid);
+            // 将流传入, 加入 seeding 分类
+            let { hash } = await qBittorrent.add(load.data, load.headers['content-disposition'].match(/([^"]+)/g)[1], 'seeding')
+            // 加入队列
+            seedings.push({ hash, uid, source, expires })
+        } catch (error) {
+            console.log(`uploader error (source=${source},uid=${uid}) : `, error)
+        }
+    }
+    // 更新数据
+    database.setData({ seedings })
+}
+
 // 轮询
-const polling = () => {
-    console.log('自动轮询 -> ', new Date())
-    queryTorrents('最新影视')
+const polling = async () => {
+    // 做一个随机延时
+    let randomTime = parseInt(Math.random() * 180);
+    console.log(`--> ${randomTime}s 后开始获取种子列表 -> `, new Date())
+    // await request.sleep(randomTime * 1000)
+    let torrents = await queryTorrents('', true);
+    torrents = torrents.filter((item) => ((item.free || item.free2x) && item.expires))
+    await uploader(torrents);
 }
 
 module.exports = {
