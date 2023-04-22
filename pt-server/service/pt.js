@@ -182,11 +182,7 @@ const download = async (url, source, uid) => {
 
 // 轮询
 const polling = async () => {
-    // 做一个随机延时
-    let randomTime = parseInt(Math.random() * 180);
-    console.log(`--> ${randomTime}s 后开始获取种子列表 -> `, new Date())
-    await request.sleep(randomTime * 1000)
-
+    
     let { seedings = [] } = database.data();
     // 将过期的移除
     for (let i = 0; i < seedings.length; i++) {
