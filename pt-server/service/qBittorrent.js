@@ -121,7 +121,6 @@ const getLastDowning = async () => {
     return torrents[0]
 }
 
-
 /**
  * 添加 种子
  * @param {*} binaryFile 

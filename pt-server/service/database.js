@@ -75,11 +75,6 @@ const website = () => {
  */
 const qb = () => {
     let data = database();
-    data.qBittorrent.setCookie = function (cookie) {
-        data.qBittorrent.cookie = cookie
-        update(data)
-        return data.qBittorrent;
-    }
     return data.qBittorrent
 }
 
