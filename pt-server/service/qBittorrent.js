@@ -36,17 +36,19 @@ const genPath = (p) => {
 // 用户登录
 const qbLogin = async () => {
     console.log(`qBittorrent cookie 失效，尝试获取`)
-    let qb = database.qb();
+    let qBittorrent = database.qb();
     let cookie = ''
     for (let i = 0; i < 3; i++) {
-        cookie = await takeLogin(qb.hostname + '/api/v2/auth/login', { username: qb.username, password: qb.password });
+        cookie = await takeLogin(qBittorrent.hostname + '/api/v2/auth/login', { username: qBittorrent.username, password: qBittorrent.password });
         if (cookie)
             break;
         await request.sleep(1000);
     }
+
     if (!cookie) throw new Error('qBittorrent 3次 登录失败')
     cookie = cookie.split(";")[0]
-    qb.setCookie(cookie)
+    qBittorrent.cookie = cookie
+    database.setData({ qBittorrent })
     return cookie;
 }
 
@@ -88,15 +90,14 @@ const qbBrowser = async (opt) => {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
             ...(options.headers || {})
         }
+        console.log('qbBrowser -> ', options)
         let res = await request(options) || ''
         // 登录失效
         if (res.statusCode === 403 && count > 3)
             throw new Error('qBittorrent 登录失败')
         else if (res.statusCode === 403) {
-            // 重新获取 token
+            // 重新获取 cookie
             options.headers.cookie = await qbLogin()
-            // 延迟取 cookie
-            await request.sleep(2000)
             // 再次 发起请求
             return await withCookie(options)
         } else if (res.data.indexOf('Fail') > -1)

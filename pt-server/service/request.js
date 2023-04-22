@@ -80,8 +80,8 @@ const noFormat = (options) => {
 const sleep = (dep = 0) => {
     return new Promise((resolve) => {
         let T = setTimeout(() => {
-            clearTimeout(T);
             resolve(`休眠 ${dep} ms`)
+            clearTimeout(T)
         }, dep)
     })
 }
