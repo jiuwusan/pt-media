@@ -186,7 +186,7 @@ const polling = async () => {
     let randomTime = parseInt(Math.random() * 180);
     console.log(`--> ${randomTime}s 后开始获取种子列表 -> `, new Date())
     await request.sleep(randomTime * 1000)
-    
+
     let { seedings = [] } = database.data();
     // 将过期的移除
     for (let i = 0; i < seedings.length; i++) {
@@ -209,13 +209,10 @@ const polling = async () => {
 
         //开始添加
         for (let i = 0; i < torrents.length; i++) {
-            if (seedings.length > 10) {
-                console.log(`uploader 队列长度 = ${seedings.length}`)
-                break;
-            }
-            const { download: url, source, uid, expires } = torrents[i];
-            // 存在则跳过
-            if (seedings.find((item) => item.uid === uid && item.source === source))
+            if (seedings.length > 10) break;
+            const { download: url, source, uid, expires, seeding } = torrents[i];
+            // 存在则跳过,或者做种人数大于等于10 跳过
+            if (seedings.find((item) => item.uid === uid && item.source === source) || seeding >= 10)
                 continue;
             try {
                 // 下载文件流
@@ -228,9 +225,8 @@ const polling = async () => {
                 console.log(`uploader error (source=${source},uid=${uid}) : `, error)
             }
         }
-        console.log(`uploader 队列长度 = ${seedings.length}`)
     }
-
+    console.log(`uploader 队列长度 = ${seedings.length}`)
     // 更新数据
     database.setData({ seedings })
 
