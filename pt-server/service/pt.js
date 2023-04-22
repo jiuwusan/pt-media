@@ -201,6 +201,10 @@ const uploader = async (torrents) => {
     }
     //开始添加
     for (let i = 0; i < torrents.length; i++) {
+        if (seedings.length > 10) {
+            console.log(`uploader 队列长度 = ${seedings.length}`)
+            break;
+        }
         const { download: url, source, uid, expires } = torrents[i];
         // 存在则跳过
         if (seedings.find((item) => item.uid === uid && item.source === source))
