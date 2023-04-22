@@ -90,7 +90,6 @@ const qbBrowser = async (opt) => {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
             ...(options.headers || {})
         }
-        console.log('qbBrowser -> ', options)
         let res = await request(options) || ''
         // 登录失效
         if (res.statusCode === 403 && count > 3)
