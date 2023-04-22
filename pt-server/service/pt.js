@@ -225,7 +225,7 @@ const polling = async () => {
     // 做一个随机延时
     let randomTime = parseInt(Math.random() * 180);
     console.log(`--> ${randomTime}s 后开始获取种子列表 -> `, new Date())
-    // await request.sleep(randomTime * 1000)
+    await request.sleep(randomTime * 1000)
     let torrents = await queryTorrents('', true);
     torrents = torrents.filter((item) => ((item.free || item.free2x) && item.expires))
     await uploader(torrents);
