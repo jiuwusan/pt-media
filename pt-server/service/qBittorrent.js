@@ -142,7 +142,7 @@ const addTorrent = async (binaryData, filename, category = 'download') => {
     // 发起请求
     await qbBrowser({ url: '/api/v2/torrents/add', formData, method: 'POST', headers: { 'content-type': 'multipart/form-data' } })
     // 获取最新一条数据
-    request.sleep(3000);
+    await request.sleep(3000);
     let torrent = await getLastDowning()
     console.log(`成功添加 -> 分类：${category}，Hash：${torrent.hash}，种子：${filename}`)
     return torrent
