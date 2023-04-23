@@ -1,1 +1,56 @@
-{"website":[{"login":"login.php","takelogin":"takelogin.php","username":"jiuwusan","password":"ZkD953497","twoStepCode":"","name":"HDSky","hostname":"https://hdsky.me/","torrents":"torrents.php","uploading":true,"cookie":"c_secure_uid=MTAyMzI2; c_secure_pass=dbd4bc376bdb70fcfe05e3586986ba70; c_secure_ssl=eWVhaA%3D%3D; c_secure_tracker_ssl=eWVhaA%3D%3D; c_secure_login=bm9wZQ%3D%3D"},{"login":"login.php","takelogin":"takelogin.php","username":"jiuwusan","password":"ZkD953497","twoStepCode":"","name":"MTeam","hostname":"https://kp.m-team.cc/","torrents":"torrents.php","cookie":"tp=Nzk1NTU2NmVhOTk0MDMxZDA1MjZkYmZiZjJmMzRjMjkyOTY5ZmNiOA%3D%3D; cf_clearance=O8ZYfFIhe55gNJWGeCPaUIq81b3F6bFqeFsbIS.u1eQ-1681893791-0-150"},{"login":"login.php","takelogin":"takelogin.php","username":"jiuwusan","password":"ZkD953497","twoStepCode":"","name":"PTTime","hostname":"https://www.pttime.org/","torrents":"torrents.php","cookie":"ipid=13085098; c_secure_uid=Mzc1OTU%3D; c_secure_pass=809373b8a18e41444618ed36ccfd19cd; c_secure_ssl=eWVhaA%3D%3D; c_secure_tracker_ssl=eWVhaA%3D%3D; c_secure_login=bm9wZQ%3D%3D"},{"login":"login.php","takelogin":"takelogin.php","username":"jiuwusan","password":"ZkD953497","twoStepCode":"","name":"HDFans","hostname":"https://hdfans.org/","torrents":"torrents.php","cookie":"c_secure_uid=MzY2MDQ%3D; c_secure_pass=f8e1261528dde1bc681a573a8df494b2; c_secure_ssl=eWVhaA%3D%3D; c_secure_tracker_ssl=eWVhaA%3D%3D; c_secure_login=bm9wZQ%3D%3D"}],"qBittorrent":{"hostname":"http://192.168.55.189:8080","username":"admin","password":"ZkD953497","cookie":"SID=xgXbH8kDKynIqEitd8PvQ+zRiozYXOyB"},"torrents":[],"seedings":[{"hash":"015e82c426ca4009b5f96995f4207337e7cd2c61","uid":"91750","source":"HDSky","expires":"2023-04-23 16:50:45"},{"hash":"b776ee00ef8fe8ab0f2a6c26a8930bed350abc27","uid":"90760","source":"HDSky","expires":"2023-04-23 16:04:07"},{"hash":"cdf958db0d54b1ea310453d5b192d53d378463d0","uid":"88389","source":"HDSky","expires":"2023-04-23 16:04:48"},{"hash":"af7f710fbcd9bbe25770c6abe0f6262540b09fd1","uid":"75027","source":"HDSky","expires":"2023-04-23 16:03:18"},{"hash":"4cd982c618c11ec1004aa252962707e2ea3062a1","uid":"54778","source":"HDSky","expires":"2023-04-24 16:51:52"},{"hash":"f7020ea6617c882f49aaef8a44ce3c4707dd7a84","uid":"313669","source":"HDSky","expires":"2023-04-22 19:36:29"},{"hash":"1a85bdad9ba4e7d84d1c4bd879a19a1bbf35a5f3","uid":"313668","source":"HDSky","expires":"2023-04-22 19:28:39"},{"hash":"e6b190081b353718ddb65c303eb3f89f3dc392a6","uid":"313667","source":"HDSky","expires":"2023-04-22 18:50:33"},{"hash":"d409d3353382f6980d74bd3f234e883545fbde45","uid":"313665","source":"HDSky","expires":"2023-04-22 18:40:19"},{"hash":"b9bbb0fa7b56d94f163ca14c84bbb978a5ea2b0c","uid":"313663","source":"HDSky","expires":"2023-04-23 00:34:35"},{"hash":"9d2fb34d2fc45eac9b3aac1adfd3a038e1b7ff66","uid":"313662","source":"HDSky","expires":"2023-04-23 00:32:03"},{"hash":"8797b0acb93b218ad047d8fdf5f4a8ef00c62c18","uid":"313658","source":"HDSky","expires":"2023-04-22 18:11:22"},{"hash":"de870e880636ba9203b78475a5f07d45ae6f1159","uid":"313657","source":"HDSky","expires":"2023-04-23 00:11:06"},{"hash":"0f7f898443080421f87431a076da7e9f37ec793e","uid":"313651","source":"HDSky","expires":"2023-04-22 22:41:13"},{"hash":"d1fb906fbc0353ffb071ad597236a702395d2432","uid":"313649","source":"HDSky","expires":"2023-04-22 15:43:42"},{"hash":"c581486709695a0e0359b62844067153898fc6bb","uid":"313644","source":"HDSky","expires":"2023-04-22 15:19:27"},{"hash":"177c7e065f2541c75ec5b7d66a29938514f2d8a4","uid":"313643","source":"HDSky","expires":"2023-04-22 20:11:43"},{"hash":"5fc9d7fa0836c17ff2eb508d88d7df2f473d3a6b","uid":"313641","source":"HDSky","expires":"2023-04-22 19:57:33"},{"hash":"dc1d504cb55fcec131652d36d6ded11991d1646e","uid":"313639","source":"HDSky","expires":"2023-04-22 13:45:49"},{"hash":"11c8f254d07fd56ca53f541c98dd15c762b8a3b0","uid":"313638","source":"HDSky","expires":"2023-04-22 13:43:55"},{"hash":"601d9458c8269dee95e30e0553a4fe31b16a4244","uid":"313637","source":"HDSky","expires":"2023-04-22 13:39:33"},{"hash":"d6bb4778a9ec84a1d1a4fecdd621d2f2a4e89e71","uid":"313620","source":"HDSky","expires":"2023-04-22 16:02:01"},{"hash":"47da755ad02982add3a13f5eb27a935b06b44eff","uid":"313617","source":"HDSky","expires":"2023-04-22 15:59:28"},{"hash":"003e0032141983cd6a272020561ba86d550159ab","uid":"313613","source":"HDSky","expires":"2023-04-22 15:41:54"}]}
+{
+    "website": [
+        {
+            "login": "login.php",
+            "takelogin": "takelogin.php",
+            "username": "username",
+            "password": "password",
+            "twoStepCode": "",
+            "name": "MTeam",
+            "hostname": "https://kp.m-team.cc/",
+            "torrents": "torrents.php",
+            "uploading": false
+        },
+        {
+            "login": "login.php",
+            "takelogin": "takelogin.php",
+            "username": "username",
+            "password": "password",
+            "twoStepCode": "",
+            "name": "PTTime",
+            "hostname": "https://www.pttime.org/",
+            "torrents": "torrents.php",
+            "uploading": false
+        },
+        {
+            "login": "login.php",
+            "takelogin": "takelogin.php",
+            "username": "username",
+            "password": "password",
+            "twoStepCode": "",
+            "name": "HDFans",
+            "hostname": "https://hdfans.org/",
+            "torrents": "torrents.php",
+            "uploading": false
+        },
+        {
+            "login": "login.php",
+            "takelogin": "takelogin.php",
+            "username": "username",
+            "password": "password",
+            "twoStepCode": "",
+            "name": "HDSky",
+            "hostname": "https://hdsky.me/",
+            "torrents": "torrents.php",
+            "uploading": true
+        }
+    ],
+    "qBittorrent": {
+        "hostname": "hostname",
+        "username": "username",
+        "password": "username"
+    },
+    "dlMaxLimit": 3,
+    "torrents": [],
+    "seedings": []
+}
