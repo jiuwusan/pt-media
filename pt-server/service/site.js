@@ -48,7 +48,6 @@ const formatInfo = async (torrent, website) => {
     // 分辨率
     torrent.resolution = (torrent.title.match(/[\d]{3,4}p/gi) || [''])[0]
     // 转换为 数字
-    console.log('torrent.seeding==',torrent.seeding)
     torrent.seeding = Number(torrent.seeding.replace(/,/g, ''))
     
     return torrent
