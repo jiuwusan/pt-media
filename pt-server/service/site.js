@@ -280,7 +280,6 @@ const HDSky = async ($, website) => {
                 } else {
                     torrent.chinese = $(torrentInfo[0]).html().split('<br>')[1];
                 }
-                console.log({title:torrent.title,chinese:torrent.chinese})
                 // 下载链接
                 torrent.download = $(torrentInfo[1]).children('table').children('tbody').children('tr').html().match(/[^"]+download.php[^"]+/g)[0].replace(/\&amp\;/g, '&')
                 // 来源
