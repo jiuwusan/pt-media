@@ -251,7 +251,7 @@ const polling = async () => {
             }
         }
     }
-    console.log(`uploader 队列长度 = ${seedings.length}`)
+    console.log(`uploader 队列长度 = ${torrents.length} \nseedings 队列长度 = ${seedings.length}`)
     // 更新数据
     database.setData({ seedings, torrents })
 

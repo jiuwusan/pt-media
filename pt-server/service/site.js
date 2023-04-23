@@ -48,6 +48,7 @@ const formatInfo = async (torrent, website) => {
     // 分辨率
     torrent.resolution = (torrent.title.match(/[\d]{3,4}p/gi) || [''])[0]
     // 转换为 数字
+    console.log('torrent.seeding==',torrent.seeding)
     torrent.seeding = Number(torrent.seeding.replace(/,/g, ''))
     
     return torrent
@@ -73,7 +74,7 @@ const HDFans = async ($, website) => {
                 // 添加时间
                 torrent.createTime = $(tds[3]).children('span').attr('title')
                 // 做种人数
-                torrent.seeding = $(tds[5]).find('a').text() || 0
+                torrent.seeding = $(tds[5]).text()
                 // 英文标题
                 torrent.title = $(torrentInfo[0]).children('a').attr('title')
                 // 详细路径
@@ -131,7 +132,7 @@ const PTTime = async ($, website) => {
                 // 添加时间
                 torrent.createTime = $(tds[4]).children('span').attr('title')
                 // 做种人数
-                torrent.seeding = $(tds[6]).find('a').text() || 0
+                torrent.seeding = $(tds[6]).text()
                 // 相关信息
                 let torrentInfo = $(tds[1]).children('.torrentname').children('tbody').children('tr').children('.embedded')
                 // 海报
@@ -191,7 +192,7 @@ const MTeam = async ($, website) => {
                 // 添加时间
                 torrent.createTime = $(tds[3]).children('span').attr('title')
                 // 做种人数
-                torrent.seeding = $(tds[5]).find('a').text() || 0
+                torrent.seeding = $(tds[5]).text()
                 // 海报
                 torrent.poster = $(tds[1]).children('.torrentname').children('tbody').children('tr').children('.torrentimg').find('img').attr('src')
                 // 相关信息
@@ -251,7 +252,7 @@ const HDSky = async ($, website) => {
                 // 添加时间
                 torrent.createTime = $(tds[3]).children('span').attr('title')
                 // 做种人数
-                torrent.seeding = $(tds[5]).find('a').text() || 0
+                torrent.seeding = $(tds[5]).text()
                 // 海报
                 // torrent.poster = $(tds[1]).children('.torrentname').children('tbody').children('tr').children('.torrentimg').find('img').attr('src')
                 // 相关信息
