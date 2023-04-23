@@ -120,7 +120,7 @@ const queryTorrents = async (search = '', uploader = false) => {
         const item = websites[i];
         if (uploader && !item.uploading)
             continue;
-        item.uploading = uploader
+        item.currentUploading = uploader
         // 关键词编码
         try {
             const body = await loadWebsite(item, search)

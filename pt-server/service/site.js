@@ -43,7 +43,7 @@ const formatInfo = async (torrent, website) => {
         // torrent.poster = website.hostname + ((/^(.?\/).+/g).test(torrent.poster) ? torrent.poster.replace(/(.?\/)/, '') : torrent.poster)
         torrent.poster = ''
     // 刷上传不需要取海报
-    if (!website.uploading)
+    if (!website.currentUploading)
         torrent.poster = await media.getPoster(torrent.shortTitle, torrent.category, torrent.poster)
     // 分辨率
     torrent.resolution = (torrent.title.match(/[\d]{3,4}p/gi) || [''])[0]
