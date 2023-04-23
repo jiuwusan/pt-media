@@ -113,7 +113,7 @@ const qbBrowser = async (opt) => {
  * @returns 
  */
 const getLastDowning = async () => {
-    let data = await qbBrowser({ url: '/api/v2/torrents/info?sort=added_on&reverse=true' })
+    let data = await qbBrowser({ url: '/api/v2/torrents/info?limit=1&category=seeding&sort=added_on&reverse=true' })
     let torrents = []
     if (data)
         torrents = JSON.parse(data)
@@ -161,7 +161,33 @@ const delTorrent = async (hashes, deleteFiles = false) => {
     return result
 }
 
+/**
+ * 获取详细数据
+ * 
+ * @returns 
+ */
+const detailTorrent = async (hashes) => {
+    let data = await qbBrowser({ url: `/api/v2/torrents/info?limit=1&hashes=${hashes}` })
+    let torrents = []
+    if (data)
+        torrents = JSON.parse(data)
+    return torrents[0]
+}
+
+/**
+ * 是否已完成
+ * 
+ * @returns 
+ */
+const isCompletion = async (hashes) => {
+    let data = await detailTorrent(hashes);
+
+    return data?.completion_on > 0
+}
+
 module.exports = {
     add: addTorrent,
-    delete: delTorrent
+    delete: delTorrent,
+    detail: detailTorrent,
+    isCompletion
 }

@@ -187,12 +187,13 @@ const polling = async () => {
     console.log(`--> ${randomTime}s 后开始获取种子列表 -> `, new Date())
     await request.sleep(randomTime * 1000)
 
-    let { seedings = [] } = database.data();
-    // 将过期的移除
+    let { seedings = [], torrents = [], dlMaxLimit = 3 } = database.data();
+
+    //检查做种队列
     for (let i = 0; i < seedings.length; i++) {
         let item = seedings[i];
         try {
-            // 当前种子免费时间到了
+            // 免费结束
             if (Date.now() > new Date(item.expires).getTime()) {
                 await qBittorrent.delete(item.hash, true);
                 seedings.splice(i, 1);
@@ -203,16 +204,37 @@ const polling = async () => {
         }
     }
 
-    if (seedings.length < 10) {
-        let torrents = await queryTorrents('', true);
-        torrents = torrents.filter((item) => ((item.free || item.free2x) && item.expires))
+    // 检查下载队列
+    for (let i = 0; i < torrents.length; i++) {
+        let item = torrents[i];
+        try {
+            if (await qBittorrent.isCompletion(item.hash)) {
+                // 加入到做种队列
+                seedings.push(item);
+                torrents.splice(i, 1);
+                i--;
+            } else if (Date.now() > new Date(item.expires).getTime()) {
+                // 免费结束,移除
+                await qBittorrent.delete(item.hash, true);
+                torrents.splice(i, 1);
+                i--;
+            }
+        } catch (error) {
+            console.log(`uploader delete error (source=${item.source},uid=${item.uid}) : `, error)
+        }
+    }
+
+    // 开始加入
+    if (torrents.length < dlMaxLimit) {
+        let newTorrents = await queryTorrents('', true);
+        newTorrents = newTorrents.filter((item) => ((item.free || item.free2x) && item.expires))
 
         //开始添加
-        for (let i = 0; i < torrents.length; i++) {
-            if (seedings.length > 10) break;
-            const { download: url, source, uid, expires, seeding } = torrents[i];
+        for (let i = 0; i < newTorrents.length; i++) {
+            if (torrents.length === dlMaxLimit) break;
+            const { download: url, source, uid, expires, seeding } = newTorrents[i];
             // 存在则跳过,或者做种人数大于等于10 跳过
-            if (seedings.find((item) => item.uid === uid && item.source === source) || seeding >= 10) {
+            if (torrents.find((item) => item.uid === uid && item.source === source) || seeding >= 10) {
                 console.log(`source=${source},uid=${uid},seeding=${seeding} 不符合要求`)
                 continue;
             }
@@ -223,7 +245,7 @@ const polling = async () => {
                 // 将流传入, 加入 seeding 分类
                 let { hash } = await qBittorrent.add(load.data, load.headers['content-disposition'].match(/([^"]+)/g)[1], 'seeding')
                 // 加入队列
-                seedings.push({ hash, uid, source, expires })
+                torrents.push({ hash, uid, source, expires })
             } catch (error) {
                 console.log(`uploader error (source=${source},uid=${uid}) : `, error)
             }
@@ -231,7 +253,7 @@ const polling = async () => {
     }
     console.log(`uploader 队列长度 = ${seedings.length}`)
     // 更新数据
-    database.setData({ seedings })
+    database.setData({ seedings, torrents })
 
 }
 
