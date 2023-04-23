@@ -274,12 +274,13 @@ const HDSky = async ($, website) => {
                 })
                 // 中文名称
                 if ($(torrentInfo[0]).children('.optiontag').length > 0) {
-                    let lastText = $(torrentInfo[0]).children().last().text()
+                    let lastText = $(torrentInfo[0]).children('.optiontag').last().text()
                     torrent.chinese = $(torrentInfo[0]).text();
                     torrent.chinese = torrent.chinese.substring(torrent.chinese.indexOf(lastText) + lastText.length)
                 } else {
                     torrent.chinese = $(torrentInfo[0]).html().split('<br>')[1];
                 }
+                console.log({title:torrent.title,chinese:torrent.chinese})
                 // 下载链接
                 torrent.download = $(torrentInfo[1]).children('table').children('tbody').children('tr').html().match(/[^"]+download.php[^"]+/g)[0].replace(/\&amp\;/g, '&')
                 // 来源

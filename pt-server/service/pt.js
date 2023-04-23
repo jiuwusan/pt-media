@@ -39,8 +39,9 @@ const takeLogin = async (url, form) => {
 
 // 用户登录
 const postLogin = async (website) => {
+    const match = (str, keyword) => str.indexOf(keyword) > -1;
     const { data } = await request.browser(`${website.hostname}${website.login}`)
-    if (match(body, 'Just a moment'))
+    if (match(data, 'Just a moment'))
         throw new Error('M-Team 站 cookie 过期，需要手动更新')
     const $ = await cheerio.load(data);
     // 取到登录所需参数
