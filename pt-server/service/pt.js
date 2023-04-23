@@ -234,7 +234,7 @@ const polling = async () => {
             if (torrents.length >= dlMaxLimit) break;
             const { download: url, source, uid, expires, seeding } = newTorrents[i];
             // 存在则跳过,或者做种人数大于等于10 跳过
-            if (torrents.find((item) => item.uid === uid && item.source === source) || seeding >= 10) {
+            if (seedings.find((item) => item.uid === uid && item.source === source) || torrents.find((item) => item.uid === uid && item.source === source) || seeding >= 10) {
                 console.log(`source=${source},uid=${uid},seeding=${seeding} 不符合要求`)
                 continue;
             }
