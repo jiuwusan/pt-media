@@ -100,7 +100,7 @@ const qbBrowser = async (opt) => {
             // 再次 发起请求
             return await withCookie(options)
         } else if (res.data.indexOf('Fail') > -1)
-            throw new Error('qBittorrent 操作失败')
+            throw new Error('qBittorrent 操作失败',res.data)
         // 返回值
         return res.data
     }
