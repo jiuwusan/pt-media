@@ -225,6 +225,7 @@ const polling = async () => {
                         break
                     case 'obsoleted':
                         // 死种，添加死种数组中
+                        await qBittorrent.delete(item.hash, true);
                         obsoleteds.push(`${item.source}-${item.uid}`); //死种
                         flag = true;
                         break
