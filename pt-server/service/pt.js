@@ -251,7 +251,7 @@ const polling = async () => {
             // 存在则跳过,或者做种人数大于等于10 跳过
             let seedingState = !(!seedings.find((item) => item.uid === uid && item.source === source));
             let torrentState = !(!torrents.find((item) => item.uid === uid && item.source === source));
-            let obsoletedState = obsoleteds.indexOf(`${item.source}-${item.uid}`) > -1;
+            let obsoletedState = obsoleteds.indexOf(`${source}-${uid}`) > -1;
             if (seedingState || torrentState || seeding >= 10 || obsoletedState) {
                 console.log(`不添加：source=${source},uid=${uid},seeding=${seedingState},torrent=${torrentState},obsoleted=${obsoletedState}`)
                 continue;
