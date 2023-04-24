@@ -214,7 +214,6 @@ const polling = async () => {
                 // 免费结束,移除
                 await qBittorrent.delete(item.hash, true);
                 flag = true;
-                continue
             } else
                 // 未过期
                 switch (await qBittorrent.state(item.hash)) {
