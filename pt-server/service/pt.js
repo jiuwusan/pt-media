@@ -188,7 +188,7 @@ const polling = async () => {
     console.log(`--> ${randomTime}s 后开始获取种子列表 -> `, new Date())
     await request.sleep(randomTime * 1000)
 
-    let { seedings = [], torrents = [], dlMaxLimit = 3 } = database.data();
+    let { seedings = [], torrents = [], obsoleteds = [], dlMaxLimit = 3 } = database.data();
 
     //检查做种队列
     for (let i = 0; i < seedings.length; i++) {
@@ -208,15 +208,29 @@ const polling = async () => {
     // 检查下载队列
     for (let i = 0; i < torrents.length; i++) {
         let item = torrents[i];
+        let flag = false;
         try {
-            if (await qBittorrent.isCompletion(item.hash)) {
-                // 加入到做种队列
-                seedings.push(item);
-                torrents.splice(i, 1);
-                i--;
-            } else if (Date.now() > new Date(item.expires).getTime()) {
+            if (Date.now() > new Date(item.expires).getTime()) {
                 // 免费结束,移除
                 await qBittorrent.delete(item.hash, true);
+                flag = true;
+                continue
+            } else
+                // 未过期
+                switch (await qBittorrent.state(item.hash)) {
+                    case 'stalledUP':
+                        // 加入到做种队列
+                        seedings.push(item);
+                        flag = true;
+                        break
+                    case 'obsoleted':
+                        // 死种，添加死种数组中
+                        obsoleteds.push(`${item.source}-${item.uid}`); //死种
+                        flag = true;
+                        break
+                }
+
+            if (flag) {
                 torrents.splice(i, 1);
                 i--;
             }
@@ -237,8 +251,9 @@ const polling = async () => {
             // 存在则跳过,或者做种人数大于等于10 跳过
             let seedingState = !(!seedings.find((item) => item.uid === uid && item.source === source));
             let torrentState = !(!torrents.find((item) => item.uid === uid && item.source === source));
-            if (seedingState || torrentState || seeding >= 10) {
-                console.log(`source=${source},uid=${uid},seeding=${seeding} 不符合要求`)
+            let obsoletedState = obsoleteds.indexOf(`${item.source}-${item.uid}`) > -1;
+            if (seedingState || torrentState || seeding >= 10 || obsoletedState) {
+                console.log(`不添加：source=${source},uid=${uid},seeding=${seedingState},torrent=${torrentState},obsoleted=${obsoletedState}`)
                 continue;
             }
 
@@ -256,7 +271,7 @@ const polling = async () => {
     }
     console.log(`uploader 队列长度 = ${torrents.length} ， seedings 队列长度 = ${seedings.length}`)
     // 更新数据
-    database.setData({ seedings, torrents })
+    database.setData({ seedings, torrents, obsoleteds })
 
 }
 

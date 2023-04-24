@@ -175,19 +175,23 @@ const detailTorrent = async (hashes) => {
 }
 
 /**
- * 是否已完成
+ * 种子状态
  * 
  * @returns 
  */
-const isCompletion = async (hashes) => {
+const state = async (hashes) => {
     let data = await detailTorrent(hashes);
-
-    return data?.completion_on > 0
+    //stalledUP = 做种中 ，stalledDL = 等待下载，downloading = 下载中
+    let result = data.state;
+    // 1 小时未开始下载，可能是死种
+    if (Date.now() - new Date(data.added_on) > 1000 * 60 * 60 && result === 'stalledDL')
+        result = 'obsoleted'; // 过时的
+    return result
 }
 
 module.exports = {
     add: addTorrent,
     delete: delTorrent,
     detail: detailTorrent,
-    isCompletion
+    state
 }
