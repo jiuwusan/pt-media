@@ -217,7 +217,7 @@ const polling = async () => {
             } else
                 // 未过期
                 switch (await qBittorrent.state(item.hash)) {
-                    case 'stalledUP', 'uploading', 'pausedUP':
+                    case 'stalledUP': case 'uploading': case 'pausedUP':
                         // 加入到做种队列
                         seedings.push(item);
                         flag = true;
