@@ -26,10 +26,9 @@ const torrents = async (ctx) => {
  * 海报
  * @param {*} ctx 
  */
-const getPoster = async (ctx) => {
-    let { keyword, type } = ctx.request.query;
-    let posterUrl = await media.getPoster(keyword, type)
-    ctx.redirect(posterUrl);
+const loadPoster = async (ctx) => {
+    let { url } = ctx.request.query;
+    ctx.body = await pt.loadPoster(url)
 }
 
 /**
@@ -80,8 +79,10 @@ const apitest = async (ctx) => {
     }
 }
 
+
+
 router.get('/torrents', torrents);
-router.get('/poster', getPoster);
+router.get('/loadPoster', loadPoster);
 router.get('/toJellyfin', toJellyfin);
 router.get('/download', download);
 router.get('/apitest', apitest);

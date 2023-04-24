@@ -260,9 +260,27 @@ const polling = async () => {
 
 }
 
+/**
+ * 加载 海报
+ */
+const loadPoster = async (loadurl) => {
+    let { data } = await request.browser(loadurl, { encoding: null });
+    return data
+}
+
+/**
+ * 模拟浏览器
+ * @param {*} option 
+ */
+const browser = (option) => {
+
+}
+
 module.exports = {
     polling,
     queryTorrents,
     userLogin,
-    download
+    download,
+    browser,
+    loadPoster
 }

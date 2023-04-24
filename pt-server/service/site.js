@@ -40,16 +40,20 @@ const formatInfo = async (torrent, website) => {
         torrent.category = 'download'
     // 拉取海报
     if (torrent.poster && !(/^https?:\/\/.+/g).test(torrent.poster))
-        // torrent.poster = website.hostname + ((/^(.?\/).+/g).test(torrent.poster) ? torrent.poster.replace(/(.?\/)/, '') : torrent.poster)
-        torrent.poster = ''
+        torrent.poster = '/loadPoster?url=' + encodeURIComponent(website.hostname + ((/^(.?\/).+/g).test(torrent.poster) ? torrent.poster.replace(/(.?\/)/, '') : torrent.poster))
+    else if (torrent.poster && (/^https?:\/\/.+/g).test(torrent.poster))
+        torrent.poster = '/loadPoster?url=' + encodeURIComponent(torrent.poster)
+
+    // torrent.poster = ''
     // 刷上传不需要取海报
     if (!website.currentUploading)
-        torrent.poster = await media.getPoster(torrent.shortTitle, torrent.category, torrent.poster)
+        torrent.poster = await media.getPoster(torrent.shortTitle, torrent.category, torrent.poster);
+
     // 分辨率
     torrent.resolution = (torrent.title.match(/[\d]{3,4}p/gi) || [''])[0]
     // 转换为 数字
     torrent.seeding = Number(torrent.seeding.replace(/,/g, ''))
-    
+
     return torrent
 }
 
