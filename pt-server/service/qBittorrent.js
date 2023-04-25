@@ -183,7 +183,7 @@ const state = async (hashes) => {
     let data = await detailTorrent(hashes);
     if (!data) return 'obsoleted'
     // 15 分钟未开始下载，可能是死种
-    if (Date.now() - new Date(data.added_on * 1000) > 1000 * 60 * 15 && result === 'stalledDL')
+    if (Date.now() - new Date(data.added_on * 1000) > 1000 * 60 * 15 && data.state === 'stalledDL')
         return 'obsoleted'; // 过时的
     //stalledUP = 做种中 ，stalledDL = 等待下载，downloading = 下载中
     return data.state
