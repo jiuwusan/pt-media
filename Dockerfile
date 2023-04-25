@@ -5,6 +5,7 @@ ADD . /app/
 WORKDIR /app/pt-fe
 # 安装项目依赖包
 RUN npm install
+# RUN npm install --registry http://192.168.55.186:4873
 # 打包静态资源
 RUN npm run build
 WORKDIR /app
@@ -14,6 +15,7 @@ RUN rm -rf pt-fe
 WORKDIR /app/pt-server
 # 安装项目依赖包
 RUN npm install
+# RUN npm install --registry http://192.168.55.186:4873
 # 容器对外暴露的端口号
 EXPOSE 39909
 # 容器启动时执行的命令，类似npm run start
