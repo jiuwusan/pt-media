@@ -100,7 +100,7 @@ const qbBrowser = async (opt) => {
             // 再次 发起请求
             return await withCookie(options)
         } else if (res.data.indexOf('Fail') > -1)
-            throw new Error('qBittorrent 操作失败',res.data)
+            throw new Error('qBittorrent 操作失败', res.data)
         // 返回值
         return res.data
     }
@@ -181,12 +181,12 @@ const detailTorrent = async (hashes) => {
  */
 const state = async (hashes) => {
     let data = await detailTorrent(hashes);
+    if (!data) return 'obsoleted'
+    // 15 分钟未开始下载，可能是死种
+    if (Date.now() - new Date(data.added_on * 1000) > 1000 * 60 * 15 && result === 'stalledDL')
+        return 'obsoleted'; // 过时的
     //stalledUP = 做种中 ，stalledDL = 等待下载，downloading = 下载中
-    let result = data.state;
-    // 1 小时未开始下载，可能是死种
-    if (Date.now() - new Date(data.added_on) > 1000 * 60 * 60 && result === 'stalledDL')
-        result = 'obsoleted'; // 过时的
-    return result
+    return data.state
 }
 
 module.exports = {
