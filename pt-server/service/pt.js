@@ -280,6 +280,9 @@ const polling = async () => {
  */
 const loadPoster = async (loadurl) => {
     let { data } = await request.browser(loadurl, { encoding: null });
+    const withCookie = async () => {
+        return 'OK'
+    }
     return data
 }
 
