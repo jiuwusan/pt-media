@@ -68,6 +68,20 @@ const toJellyfin = async (ctx) => {
 }
 
 /**
+ * 清空队列
+ * @param {*} ctx 
+ */
+const pollingClear = async (ctx) => {
+    let { type } = ctx.request.query || {};
+
+    ctx.body = {
+        code: 0,
+        msg: '成功',
+        data: await pt.pollingClear(type)
+    }
+}
+
+/**
  * TEST 接口
  * @param {*} ctx 
  */
@@ -75,7 +89,7 @@ const apitest = async (ctx) => {
     ctx.body = {
         code: 0,
         msg: '成功',
-        data: await qb.delete('015e82c426ca4009b5f96995f4207337e7cd2c61', true)
+        data: await pt.polling()
     }
 }
 
@@ -85,6 +99,7 @@ router.get('/torrents', torrents);
 router.get('/loadPoster', loadPoster);
 router.get('/toJellyfin', toJellyfin);
 router.get('/download', download);
+router.get('/polling/clear', pollingClear);
 router.get('/apitest', apitest);
 
 module.exports = router

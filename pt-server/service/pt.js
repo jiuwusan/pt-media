@@ -187,7 +187,7 @@ const polling = async () => {
     // 做一个随机延时
     let randomTime = parseInt(Math.random() * 30);
     console.log(`${moment().format("YYYY-MM-DD HH:mm:ss")} --> ${randomTime}s 后开始获取种子列表`)
-    
+
     await request.sleep(randomTime * 1000)
 
     let { seedings = [], torrents = [], obsoleteds = [], dlMaxLimit = 3 } = database.data();
@@ -277,6 +277,39 @@ const polling = async () => {
 
 }
 
+// 清空队列
+const pollingClear = async (type) => {
+    let { seedings = [], torrents = [] } = database.data();
+    let clearQueue = [];
+    switch (type) {
+        case 'torrents':
+            clearQueue.push.apply(clearQueue, torrents);
+            torrents = [];
+            break;
+        case 'seedings':
+            clearQueue.push.apply(clearQueue, seedings);
+            seedings = [];
+            break
+        default:
+            clearQueue.push.apply(clearQueue, torrents);
+            clearQueue.push.apply(clearQueue, seedings);
+            torrents = [];
+            seedings = [];
+            break;
+    }
+
+    for (let i = 0; i < clearQueue.length; i++) {
+        await qBittorrent.delete(clearQueue[i].hash, true);
+    }
+
+    let msg = `清空 uploader, 当前队列 torrents = ${torrents.length} ， seedings = ${seedings.length}`;
+
+    console.log(msg)
+    // 更新数据
+    database.setData({ seedings, torrents })
+    return msg
+}
+
 /**
  * 加载 海报
  */
@@ -302,5 +335,6 @@ module.exports = {
     userLogin,
     download,
     browser,
-    loadPoster
+    loadPoster,
+    pollingClear
 }

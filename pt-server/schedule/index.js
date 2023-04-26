@@ -6,7 +6,7 @@ const pt = require('../service/pt')
  */
 const create = () => {
     console.log("初始化 定时任务")
-    schedule.scheduleJob('0 */5 * * * *', pt.polling)
+    // schedule.scheduleJob('0 */5 * * * *', pt.polling)
 }
 
 module.exports = {
