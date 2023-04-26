@@ -4,6 +4,7 @@ const ocrApi = require('./ocr')
 const request = require('./request')
 const site = require('./site')
 const qBittorrent = require('./qBittorrent')
+const moment = require("moment");
 
 /**
  * 获取链接参数
@@ -185,7 +186,8 @@ const download = async (url, source, uid) => {
 const polling = async () => {
     // 做一个随机延时
     let randomTime = parseInt(Math.random() * 30);
-    console.log(`--> ${randomTime}s 后开始获取种子列表 -> `, new Date())
+    console.log(`${moment().format("YYYY-MM-DD HH:mm:ss")} --> ${randomTime}s 后开始获取种子列表`)
+    
     await request.sleep(randomTime * 1000)
 
     let { seedings = [], torrents = [], obsoleteds = [], dlMaxLimit = 3 } = database.data();
