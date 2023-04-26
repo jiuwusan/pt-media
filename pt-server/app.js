@@ -7,6 +7,7 @@ const fs = require('fs');
 const serve = require('koa-static');
 const schedule = require('./schedule');
 const static = serve(path.join(__dirname) + '/public/');
+const moment = require("moment");
 
 const genPath = (p) => {
     return path.join(__dirname, p);
@@ -27,7 +28,7 @@ app.use(async (ctx, next) => {
     try {
         await next();
     } catch (error) {
-       console.log('error -> ',error)
+        console.log('error -> ', error)
         ctx.body = {
             code: error?.code || 99,
             msg: error?.message || '系统错误',
@@ -48,5 +49,5 @@ app.use(function (ctx, next) {
 http.createServer(app.callback())
     .listen(39909)
     .on('listening', function () {
-        console.log('server listening on: ' + 39909)
+        console.log(moment().format("YYYY-MM-DD HH:mm:ss") + ' --> server listening on: ' + 39909)
     });
