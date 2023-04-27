@@ -135,8 +135,8 @@ const addTorrent = async (binaryData, filename, category = 'download') => {
         paused: 'false',//开始
         stopCondition: 'None',
         contentLayout: 'Original',
-        dlLimit: 30000000,
-        upLimit: 13000000
+        // dlLimit: 30000000,
+        // upLimit: 13000000
     }
 
     // 发起请求
